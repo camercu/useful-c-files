@@ -44,13 +44,13 @@
 #ifndef _minunit_h
 #define _minunit_h
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "dbg.h"
-
 #ifndef _DEBUG_MODE
 # define _DEBUG_MODE
 #endif /* _DEBUG_MODE */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "dbg.h"
 
 #define mu_suite_start() const char *message = NULL
 
