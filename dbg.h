@@ -46,11 +46,10 @@
 #define log_warn(MSG, ...) fprintf(stderr, "[WARN] (%s:%s:%d: errno: %s) " MSG "\n", _TRACE_, clean_strerror(), ##__VA_ARGS__)
 #define log_info(MSG, ...) fprintf(stderr, "[INFO] (%s:%s:%d) " MSG "\n", _TRACE_, ##__VA_ARGS__)
 
-/* print formatted debug messages to stderr */
+/* print formatted debug messages to stderr only when _DEBUG_MODE defined */
 #ifdef _DEBUG_MODE
 # define debug(MSG, ...) fprintf(stderr, "[DEBUG] (%s:%s:%d) " MSG "\n", _TRACE_, ##__VA_ARGS__)
 #else
-/* no debug messages printed */
 # define debug(MSG, ...)
 #endif /* _DEBUG_MODE */
 
@@ -77,10 +76,10 @@
 
 /* Cause program to act as if check() failed, and goto cleanup "unexpectedly".
    Insert wherever you want to test an unexpected failure in your program code. */
-#define FAIL() do {log_err("FAIL point for debugging"); errno=0; goto cleanup; } while (0)
+#define FAIL() do { log_err("FAIL point for debugging"); errno=0; goto cleanup; } while (0)
 
 /* Like fail(), causes "unexpected" program exit, like when failing enforce() */
-#define DIE() do {log_err("EXIT_FAILURE for debugging"); exit(EXIT_FAILURE); } while (0)
+#define DIE() do { log_err("EXIT_FAILURE for debugging"); exit(EXIT_FAILURE); } while (0)
 
 /* computes how long a function takes to run (miliseconds) */
 #define log_time(FUNC, ...) do { clock_t start=clock(); \
