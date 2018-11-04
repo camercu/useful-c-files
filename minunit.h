@@ -52,6 +52,10 @@
 #include <stdlib.h>
 #include "dbg.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define mu_suite_start() const char *message = NULL
 
 #define mu_assert(test, message) if (!(test)) { log_err(message); return message; }
@@ -75,5 +79,9 @@
 	}
 
 int tests_run = 0;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _minunit_h */

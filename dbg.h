@@ -25,6 +25,10 @@
 #include <stdlib.h> /* EXIT_SUCCESS, EXIT_FAILURE, random(), RAND_MAX */
 #include <unistd.h> /* usleep() */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* common function return codes for success and failure */
 #define FUNC_SUCCESS (0)
 #define FUNC_FAILURE (-1)
@@ -113,5 +117,9 @@
   ((BYTE) & 0x04 ? '1' : '0'), \
   ((BYTE) & 0x02 ? '1' : '0'), \
   ((BYTE) & 0x01 ? '1' : '0')
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __dbg_h__ */
