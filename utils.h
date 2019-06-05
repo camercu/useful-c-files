@@ -6,7 +6,7 @@
 #ifndef __util_macros_h__
 #define __util_macros_h__
 
-#include <errno.h>  /* errno */
+#include <errno.h> /* errno */
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,10 +16,20 @@ extern "C" {
 #define MIN(A, B) ((A) < (B) ? (A) : (B))
 #define MAX(A, B) ((A) > (B) ? (A) : (B))
 
+/* Swaps simple integral datatypes around (e.g. integers, pointers) */
+#define SWAP(A, B)       \
+    do {                 \
+        (A) = (A) ^ (B); \
+        (B) = (B) ^ (A); \
+        (A) = (A) ^ (B); \
+    } while (0)
+
 /* macro to restart a system call that was interrupted by a signal.
    Source: Kerrisk, Michael. The Linux Programming Interface: A Linux and UNIX
    System Programming Handbook. No Starch Press. San Francisco, 2010. pg. 443 */
-#define NO_EINTR(STMT) while ((STMT) == -1 && errno == EINTR);
+#define NO_EINTR(STMT)                     \
+    while ((STMT) == -1 && errno == EINTR) \
+        ;
 /* example usage:
    NO_EINTR(cnt = read(fd, buf, BUF_SIZE));
    check(cnt != -1, "read() failed with other than EINTR"); */
