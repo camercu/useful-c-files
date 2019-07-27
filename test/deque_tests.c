@@ -4,7 +4,7 @@
 
 const char *test_create_destroy() {
     deque_t *new = dq_create();
-    if (!new) return "dq_create() failed. Out of memory?";
+    mu_assert(new, "dq_create() failed. Out of memory?");
     dq_destroy(new, NULL);
     return NULL;  // indicates success
 }

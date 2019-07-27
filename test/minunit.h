@@ -60,28 +60,28 @@
         return message;          \
     }
 
-#define mu_run_test(test)                             \
-    do {                                              \
-        fprintf(stderr, "--- [MINUNIT] %s\n", #test); \
-        message = test();                             \
-        tests_run++;                                  \
-        if (message)                                  \
-            return message;                           \
+#define mu_run_test(test)                                   \
+    do {                                                    \
+        fprintf(stderr, "--- [minunit] %s() ---\n", #test); \
+        message = test();                                   \
+        tests_run++;                                        \
+        if (message)                                        \
+            return message;                                 \
     } while (0)
 
-#define RUN_TESTS(name)                                          \
-    int main(int argc, const char *argv[]) {                     \
-        argc = 1;                                                \
-        fprintf(stderr, ">>> [MINUNIT] RUNNING: %s\n", argv[0]); \
-        printf("--- RUNNING: %s ---\n", argv[0]);                \
-        const char *result = name();                             \
-        if (result != 0) {                                       \
-            printf("FAILED: %s\n", result);                      \
-        } else {                                                 \
-            printf("ALL TESTS PASSED\n");                        \
-        }                                                        \
-        printf("Tests run: %d\n", tests_run);                    \
-        exit(result != 0);                                       \
+#define RUN_TESTS(main_test)                                         \
+    int main(int argc, const char *argv[]) {                         \
+        argc = 1;                                                    \
+        fprintf(stderr, ">>> [minunit] RUNNING: %s >>>\n", argv[0]); \
+        printf("[minunit] RUNNING: %s ---\n", argv[0]);              \
+        const char *result = main_test();                            \
+        if (result != 0) {                                           \
+            printf("[minunit] FAILED: %s\n", result);                \
+        } else {                                                     \
+            printf("[minunit] ALL TESTS PASSED\n");                  \
+        }                                                            \
+        printf("[minunit] Tests run: %d\n", tests_run);              \
+        exit(result != 0);                                           \
     }
 
 int tests_run = 0;

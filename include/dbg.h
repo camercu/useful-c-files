@@ -42,8 +42,8 @@
 #define clean_strerror() (errno == 0 ? "None" : strerror(errno))
 
 /* logging macros: print formatted message to stderr, with trace to logging stmt */
-#define log_err(MSG, ...) fprintf(stderr, "[ERROR] (%s:%s:%d: errno: %s) " MSG "\n", _TRACE_, clean_strerror(), ##__VA_ARGS__)
-#define log_warn(MSG, ...) fprintf(stderr, "[WARN] (%s:%s:%d: errno: %s) " MSG "\n", _TRACE_, clean_strerror(), ##__VA_ARGS__)
+#define log_err(MSG, ...) fprintf(stderr, "[ERROR] (%s:%s:%d:%s) " MSG "\n", _TRACE_, clean_strerror(), ##__VA_ARGS__)
+#define log_warn(MSG, ...) fprintf(stderr, "[WARN] (%s:%s:%d:%s) " MSG "\n", _TRACE_, clean_strerror(), ##__VA_ARGS__)
 #define log_info(MSG, ...) fprintf(stderr, "[INFO] (%s:%s:%d) " MSG "\n", _TRACE_, ##__VA_ARGS__)
 
 /* print formatted debug messages to stderr only when NDEBUG is not defined */
