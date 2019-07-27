@@ -51,7 +51,8 @@ test: clean all $(TESTS)
 
 .PHONY: clean
 clean:
-	rm -rf $(BUILD_DIR) $(OBJ_DIR) $(TESTS) $(TEST_DIR)/*.d $(TEST_DIR)/*.log
+	$(RM) -r $(BUILD_DIR) $(OBJ_DIR) $(TESTS)
+	$(RM) -r $(TEST_DIR)/*.d $(TEST_DIR)/*.log $(TEST_DIR)/*.dSYM
 
 
 #########################################
