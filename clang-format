@@ -3,7 +3,7 @@ BasedOnStyle: Chromium
 BreakBeforeTernaryOperators: 'true'
 DerivePointerAlignment: 'false'
 IncludeBlocks: Preserve
-IndentCaseLabels: 'false'
+IndentCaseLabels: 'true'
 IndentPPDirectives: AfterHash
 PointerAlignment: Right
 ReflowComments: 'true'
