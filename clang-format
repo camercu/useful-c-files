@@ -1,0 +1,15 @@
+﻿---
+BasedOnStyle: Chromium
+BreakBeforeTernaryOperators: 'true'
+DerivePointerAlignment: 'false'
+IncludeBlocks: Preserve
+IndentCaseLabels: 'false'
+IndentPPDirectives: AfterHash
+PointerAlignment: Right
+ReflowComments: 'true'
+SpaceBeforeParens: ControlStatements
+IndentWidth: '4'
+TabWidth: '4'
+UseTab: Never
+
+...

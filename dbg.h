@@ -50,37 +50,37 @@ extern "C" {
 #define log_warn(MSG, ...) fprintf(stderr, "[WARN] (%s:%s:%d: errno: %s) " MSG "\n", _TRACE_, clean_strerror(), ##__VA_ARGS__)
 #define log_info(MSG, ...) fprintf(stderr, "[INFO] (%s:%s:%d) " MSG "\n", _TRACE_, ##__VA_ARGS__)
 
-/* print formatted debug messages to stderr only when _DEBUG_MODE defined */
-#ifdef _DEBUG_MODE
+/* print formatted debug messages to stderr only when NDEBUG is not defined */
+#ifndef NDEBUG
 # define debug(MSG, ...) fprintf(stderr, "[DEBUG] (%s:%s:%d) " MSG "\n", _TRACE_, ##__VA_ARGS__)
 #else
 # define debug(MSG, ...)
 #endif /* _DEBUG_MODE */
 
 /* enhanced assert(); check that ASSERT_COND is true, otherwise log formatted
-   error msg then "goto cleanup" for cleanup */
-#define check(ASSERT_COND, MSG, ...) if(!(ASSERT_COND)) { log_err(MSG, ##__VA_ARGS__); goto cleanup; }
+   error msg then "goto error" for cleanup/exit */
+#define check(ASSERT_COND, MSG, ...) if(!(ASSERT_COND)) { log_err(MSG, ##__VA_ARGS__); goto error; }
 
 /* To check for common errors where you might want to turn off the logging */
-#define check_debug(ASSERT_COND, MSG, ...) if(!(ASSERT_COND)) { debug(MSG, ##__VA_ARGS__); goto cleanup; }
+#define check_debug(ASSERT_COND, MSG, ...) if(!(ASSERT_COND)) { debug(MSG, ##__VA_ARGS__); goto error; }
 
 /* checks that memory was allocated to pointer as expected, i.e. not NULL */
-#define check_mem(MEM_PTR) if(!(MEM_PTR)) { log_err("Out of memory."); errno=ENOMEM; goto cleanup; }
+#define check_mem(MEM_PTR) if(!(MEM_PTR)) { log_err("Out of memory."); errno=ENOMEM; goto error; }
 
 /* like check_mem, but for pointers you plan to dereference */
-#define check_ptr(PTR) if(!(PTR)) { log_err("%s cannot be NULL; will cause dereference error.", STRINGIFY(PTR)); errno=EINVAL; goto cleanup; }
+#define check_ptr(PTR) if(!(PTR)) { log_err("%s cannot be NULL; will cause dereference error.", STRINGIFY(PTR)); errno=EINVAL; goto error; }
 
 /* placed in part of fn that shouldn't run, i.e. if/switch branches;
-   prints error followed by "goto cleanup" for cleanup */
-# define sentinel(MSG, ...) do { log_err(MSG, ##__VA_ARGS__); goto cleanup; } while(0)
+   prints error followed by "goto error" for cleanup/exit */
+# define sentinel(MSG, ...) do { log_err(MSG, ##__VA_ARGS__); goto error; } while(0)
 
 /* like check, but exits program immediately with EXIT_FAILURE when assert fails */
 #define enforce(ASSERT_COND, MSG, ...) if(!(ASSERT_COND)) { log_err(MSG, ##__VA_ARGS__); exit(EXIT_FAILURE); }
 #define enforce_mem(MEM_PTR) enforce((MEM_PTR), "Out of memory.")
 
-/* Cause program to act as if check() failed, and goto cleanup "unexpectedly".
+/* Cause program to act as if check() failed, and goto error "unexpectedly".
    Insert wherever you want to test an unexpected failure in your program code. */
-#define FAIL() do { log_err("FAIL point for debugging"); errno=0; goto cleanup; } while (0)
+#define FAIL() do { log_err("FAIL point for debugging"); errno=0; goto error; } while (0)
 
 /* Like fail(), causes "unexpected" program exit, like when failing enforce() */
 #define DIE() do { log_err("EXIT_FAILURE for debugging"); exit(EXIT_FAILURE); } while (0)
@@ -95,7 +95,7 @@ extern "C" {
    https://mikeash.com/pyblog/friday-qa-2010-12-31-c-macro-tips-and-tricks.html */
 
 /* performs free() [or equivalent] only if ptr is not NULL, and sets ptr to
-   NULL after free. Helps avoid double-free bugs with "goto cleanup"
+   NULL after free. Helps avoid double-free bugs with "goto error"
    Example: safefree(ptr);
    Example: safefree(mutex_ptr, pthread_mutex_destroy); */
 #define __safefree(PTR, FREE_FUNC, ...) if((PTR)) { (*(FREE_FUNC))((void*)(PTR)); (PTR) = NULL; }

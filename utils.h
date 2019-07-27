@@ -15,6 +15,7 @@ extern "C" {
 #define ABS(VALUE) ((VALUE) < 0 ? -(VALUE) : (VALUE))
 #define MIN(A, B) ((A) < (B) ? (A) : (B))
 #define MAX(A, B) ((A) > (B) ? (A) : (B))
+#define SWAP(A, B) do { (A) ^= (B); (B) ^= (A); (A) ^= (B); } while (0)
 
 /* macro to restart a system call that was interrupted by a signal.
    Source: Kerrisk, Michael. The Linux Programming Interface: A Linux and UNIX
