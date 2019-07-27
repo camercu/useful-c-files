@@ -23,19 +23,19 @@ CC := gcc
 .PHONY: all
 all: $(TARGET)
 
+$(BUILD_DIR)/$(TARGET): $(OBJECTS)
+	$(LINK.c) $(INCLUDES) $^ $(LDLIBS) -o $@
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(OBJ_DIR)/%.d | $(BUILD_DIR) $(OBJ_DIR)
+	$(COMPILE.c) $(INCLUDES) $< -o $@
+
+$(BUILD_DIR) $(OBJ_DIR):
+	@mkdir -p $(BUILD_DIR) $(OBJ_DIR)
+
 .PHONY: dev
 dev: CFLAGS := $(filter-out -Os -DNDEBUG, $(CFLAGS))
 dev: CFLAGS += $(DEBUG_FLAGS)
 dev: clean all
-
-$(BUILD_DIR)/$(TARGET): $(OBJECTS)
-	$(LINK.c) $(INCLUDES) $^ $(LDLIBS) -o $@
-
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(OBJ_DIR)/%.d | pre-build
-	$(COMPILE.c) $(INCLUDES) $< -o $@
-
-pre-build:
-	mkdir -p $(BUILD_DIR) $(OBJ_DIR)
 
 ####################
 # Unit Tests
