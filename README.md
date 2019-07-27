@@ -1,6 +1,7 @@
 # Useful C Constructs #
 
-A collection of C files with useful functions and macros for general use.
+A collection of C files with useful functions and macros for general use. The directory structure also mirrors how I'd typically structure
+a medium-sized project.
 
 ## dbg.h
 
@@ -15,3 +16,5 @@ Minimalist unit-testing framework.
 Doubly-linked list data structure.
 
 ## utils.c/h
+
+Helpful utilities for common tasks (MIN, MAX, ABS, etc.)

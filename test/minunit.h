@@ -52,10 +52,6 @@
 #include <stdlib.h>
 #include "dbg.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define mu_suite_start() const char *message = NULL
 
 #define mu_assert(test, message) \
@@ -64,34 +60,30 @@ extern "C" {
         return message;          \
     }
 
-#define mu_run_test(test)           \
-    do {                            \
-        debug("\n----- %s", #test); \
-        message = test();           \
-        tests_run++;                \
-        if (message)                \
-            return message;         \
+#define mu_run_test(test)                             \
+    do {                                              \
+        fprintf(stderr, "--- [MINUNIT] %s\n", #test); \
+        message = test();                             \
+        tests_run++;                                  \
+        if (message)                                  \
+            return message;                           \
     } while (0)
 
-#define RUN_TESTS(name)                         \
-    int main(int argc, const char *argv[]) {    \
-        argc = 1;                               \
-        debug("----- RUNNING: %s", argv[0]);    \
-        printf("----\nRUNNING: %s\n", argv[0]); \
-        const char *result = name();            \
-        if (result != 0) {                      \
-            printf("FAILED: %s\n", result);     \
-        } else {                                \
-            printf("ALL TESTS PASSED\n");       \
-        }                                       \
-        printf("Tests run: %d\n", tests_run);   \
-        exit(result != 0);                      \
+#define RUN_TESTS(name)                                          \
+    int main(int argc, const char *argv[]) {                     \
+        argc = 1;                                                \
+        fprintf(stderr, ">>> [MINUNIT] RUNNING: %s\n", argv[0]); \
+        printf("--- RUNNING: %s ---\n", argv[0]);                \
+        const char *result = name();                             \
+        if (result != 0) {                                       \
+            printf("FAILED: %s\n", result);                      \
+        } else {                                                 \
+            printf("ALL TESTS PASSED\n");                        \
+        }                                                        \
+        printf("Tests run: %d\n", tests_run);                    \
+        exit(result != 0);                                       \
     }
 
 int tests_run = 0;
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* _minunit_h */

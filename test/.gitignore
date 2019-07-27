@@ -1,0 +1,8 @@
+# Ignore everything in the directory
+*
+
+# Except:
+!.gitignore
+!*.sh
+!*.c
+!*.h

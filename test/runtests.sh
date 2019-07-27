@@ -11,16 +11,16 @@ COLOR_RED=$(tput setaf 1)
 
 echo "${ATTR_BOLD}>>> Running unit tests:${ATTR_RESET}"
 
-for i in tests/*_tests; do
+for i in *_tests; do
 	if [ -f "$i" ]; then
 		VALGRIND=
-		# VALGRIND="valgrind --leak-check=full --log-file=tests/valgrind-${i}.log"
-		if $VALGRIND "./$i" 2>> tests/tests.log; then
+		# VALGRIND="valgrind --leak-check=full --show-leak-kinds=all --log-file=valgrind-${i}.log"
+		if $VALGRIND "./$i" 2>> tests.log; then
 			echo "${ATTR_BOLD}+++ $i PASS${ATTR_RESET}"
 		else
-			echo "${COLOR_RED}${ATTR_BOLD}>>> ERROR in test '$i':${ATTR_RESET} here's the tests/tests.log"
+			echo "${COLOR_RED}${ATTR_BOLD}>>> ERROR in test '$i':${ATTR_RESET} here's the tests.log"
 			echo "--------------"
-			tail tests/tests.log
+			tail tests.log
 			exit 1
 		fi
 	fi
