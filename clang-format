@@ -1,6 +1,17 @@
 ﻿---
+# USAGE: Copy this file into your project directiory as ".clang-format"
+#
+# To dump from cli: clang-format --style=Google -dump-config
+
 BasedOnStyle: Chromium
+
+---
+Language: Cpp
+
+AlignAfterOpenBracket: AlwaysBreak
+BreakBeforeBraces: Attach
 BreakBeforeTernaryOperators: 'true'
+ColumnLimit: 100
 DerivePointerAlignment: 'false'
 IncludeBlocks: Preserve
 IndentCaseLabels: 'true'
