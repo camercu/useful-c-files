@@ -23,12 +23,15 @@ CC := gcc
 .PHONY: all
 all: $(TARGET)
 
+### TARGET ###
 $(BUILD_DIR)/$(TARGET): $(OBJECTS)
 	$(LINK.c) $(INCLUDES) $^ $(LDLIBS) -o $@
 
+# OBJECTS
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(OBJ_DIR)/%.d | $(BUILD_DIR) $(OBJ_DIR)
 	$(COMPILE.c) $(INCLUDES) $< -o $@
 
+# SOURCES
 $(BUILD_DIR) $(OBJ_DIR):
 	@mkdir -p $(BUILD_DIR) $(OBJ_DIR)
 
