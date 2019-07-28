@@ -1,7 +1,7 @@
 ##########################################################
 # Example test script to run unit tests (see minunit.h)
 # Assumes test binaries are in a "tests/" subfolder
-# From Zed Shaw's "Learn C the Hard Way"
+# Adapted from Zed Shaw's "Learn C the Hard Way"
 # url: http://c.learncodethehardway.org/book/ex28.html
 ##########################################################
 
