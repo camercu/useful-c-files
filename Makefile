@@ -48,8 +48,9 @@ $(TESTS): $(TEST_DIR)/% : $(TEST_DIR)/%.c $(OBJECTS)
 	$(LINK.c) $(INCLUDES) $^ $(LDLIBS) -o $@
 
 .PHONY: test
-test: CFLAGS := $(filter-out -Os -DNDEBUG, $(CFLAGS))
-test: CFLAGS += $(DEBUG_FLAGS)
+test: CFLAGS   := $(filter-out -Os -DNDEBUG, $(CFLAGS))
+test: CFLAGS   += $(DEBUG_FLAGS)
+test: CPPFLAGS := $(filter-out -MMD -MP, $(CPPFLAGS))
 test: clean all $(TESTS)
 	cd $(TEST_DIR) && sh runtests.sh
 
