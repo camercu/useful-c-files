@@ -16,13 +16,13 @@ bool dq_is_empty(deque_t *dq) {
         errno = EINVAL;
         return true;
     }
-    res = !dq->front;
+    res = !dq->head;
     assert(res == !dq->n_items);
-    return !dq->front;
+    return !dq->head;
 }
 
-/* Pushes an item of data onto the front of the deque. Returns a pointer to the
- * node that was pushed onto the deque (i.e. the new front), or NULL on error. */
+/* Pushes an item of data onto the head of the deque. Returns a pointer to the
+ * node that was pushed onto the deque (i.e. the new head), or NULL on error. */
 node_t *dq_push(deque_t *dq, void *data) {
     node_t *new;
     if (!dq) {
@@ -37,19 +37,19 @@ node_t *dq_push(deque_t *dq, void *data) {
     }
 
     new->data = data;
-    new->next = dq->front;
-    if (dq->front) {
-        dq->front->prev = new;
+    new->next = dq->head;
+    if (dq->head) {
+        dq->head->prev = new;
     }
-    dq->front = new;
-    if (!dq->back) {
-        dq->back = new;
+    dq->head = new;
+    if (!dq->tail) {
+        dq->tail = new;
     }
     dq->n_items++;
     return new;
 }
 
-/* Pops a node off the front of the deque, and returns the contained data, or
+/* Pops a node off the head of the deque, and returns the contained data, or
  * NULL if empty. */
 void *dq_pop(deque_t *dq) {
     void *ret = NULL;
@@ -60,22 +60,22 @@ void *dq_pop(deque_t *dq) {
     }
 
     if (!dq_is_empty(dq)) {
-        tmp = dq->front;
+        tmp = dq->head;
         ret = tmp->data;
-        dq->front = dq->front->next;
+        dq->head = dq->head->next;
         free(tmp);
-        if (dq->front) {
-            dq->front->prev = NULL;
+        if (dq->head) {
+            dq->head->prev = NULL;
         } else {
-            dq->back = NULL;
+            dq->tail = NULL;
         }
         dq->n_items--;
     }
     return ret;
 }
 
-/* Appends an item of data onto the back of the deque. Returns a pointer to the
- * node that was appended onto the deque (i.e. the new back), or NULL on error.
+/* Appends an item of data onto the tail of the deque. Returns a pointer to the
+ * node that was appended onto the deque (i.e. the new tail), or NULL on error.
  */
 node_t *dq_append(deque_t *dq, void *data) {
     node_t *new;
@@ -91,18 +91,18 @@ node_t *dq_append(deque_t *dq, void *data) {
     }
 
     new->data = data;
-    new->prev = dq->back;
-    if (dq->back)
-        dq->back->next = new;
-    dq->back = new;
-    if (!dq->front) {
-        dq->front = new;
+    new->prev = dq->tail;
+    if (dq->tail)
+        dq->tail->next = new;
+    dq->tail = new;
+    if (!dq->head) {
+        dq->head = new;
     }
     dq->n_items++;
     return new;
 }
 
-/* Dequeues a node off the back of the deque, and returns the contained data, or
+/* Dequeues a node off the tail of the deque, and returns the contained data, or
  * NULL if empty. */
 void *dq_dequeue(deque_t *dq) {
     void *ret = NULL;
@@ -113,14 +113,14 @@ void *dq_dequeue(deque_t *dq) {
     }
 
     if (!dq_is_empty(dq)) {
-        tmp = dq->back;
+        tmp = dq->tail;
         ret = tmp->data;
-        dq->back = dq->back->prev;
+        dq->tail = dq->tail->prev;
         free(tmp);
-        if (dq->back) {
-            dq->back->next = NULL;
+        if (dq->tail) {
+            dq->tail->next = NULL;
         } else {
-            dq->front = NULL;
+            dq->head = NULL;
         }
         dq->n_items--;
     }
@@ -171,18 +171,18 @@ deque_t *dq_join(deque_t *a, deque_t *b) {
         return NULL;
     }
     if (dq_is_empty(a)) {
-        a->front = b->front;
-        a->back = b->back;
+        a->head = b->head;
+        a->tail = b->tail;
     } else {
-        a->back->next = b->front;
-        if (b->front) {
-            b->front->prev = a->back;
+        a->tail->next = b->head;
+        if (b->head) {
+            b->head->prev = a->tail;
         }
-        a->back = b->back;
+        a->tail = b->tail;
     }
     a->n_items += b->n_items;
-    b->front = NULL;
-    b->back = NULL;
+    b->head = NULL;
+    b->tail = NULL;
     b->n_items = 0;
     return a;
 }
@@ -202,7 +202,7 @@ deque_t *dq_copy(deque_t *orig) {
         errno = ENOMEM;
         return NULL;
     }
-    p = orig->front;
+    p = orig->head;
     for (i = 0; i < orig->n_items; i++) {
         if (!dq_append(new, p->data)) {
             errno = ENOMEM;
@@ -233,7 +233,7 @@ deque_t *dq_merge(deque_t *left, deque_t *right) {
     }
 
     while (!dq_is_empty(left) && !dq_is_empty(right)) {
-        if (left->front->data <= right->front->data) {
+        if (left->head->data <= right->head->data) {
             dq_append(result, dq_pop(left));
         } else {
             dq_append(result, dq_pop(right));

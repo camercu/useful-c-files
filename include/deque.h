@@ -18,8 +18,8 @@ typedef struct Node {
 } node_t;
 
 typedef struct Deque {
-    struct Node *front;
-    struct Node *back;
+    struct Node *head;
+    struct Node *tail;
     ssize_t n_items;
 } deque_t;
 
@@ -59,20 +59,20 @@ bool dq_is_empty(deque_t *dq);
  */
 ssize_t dq_len(deque_t *dq);
 
-/* Pushes an item of data onto the front of the deque. Returns a pointer to the
- * node that was pushed onto the deque (i.e. the new front), or NULL on error. */
+/* Pushes an item of data onto the head of the deque. Returns a pointer to the
+ * node that was pushed onto the deque (i.e. the new head), or NULL on error. */
 node_t *dq_push(deque_t *dq, void *data);
 
-/* Pops a node off the front of the deque, and returns the contained data, or
+/* Pops a node off the head of the deque, and returns the contained data, or
  * NULL if empty. */
 void *dq_pop(deque_t *dq);
 
-/* Appends an item of data onto the back of the deque. Returns a pointer to the
- * node that was appended onto the deque (i.e. the new back), or NULL on error.
+/* Appends an item of data onto the tail of the deque. Returns a pointer to the
+ * node that was appended onto the deque (i.e. the new tail), or NULL on error.
  */
 node_t *dq_append(deque_t *dq, void *data);
 
-/* Dequeues a node off the back of the deque, and returns the contained data, or
+/* Dequeues a node off the tail of the deque, and returns the contained data, or
  * NULL if empty. */
 void *dq_dequeue(deque_t *dq);
 
