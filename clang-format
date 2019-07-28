@@ -8,10 +8,10 @@ BasedOnStyle: Chromium
 ---
 Language: Cpp
 
-AlignAfterOpenBracket: AlwaysBreak
+AlignAfterOpenBracket: Align
 BreakBeforeBraces: Attach
 BreakBeforeTernaryOperators: 'true'
-ColumnLimit: 100
+ColumnLimit: 80
 DerivePointerAlignment: 'false'
 IncludeBlocks: Preserve
 IndentCaseLabels: 'true'
