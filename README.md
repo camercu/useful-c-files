@@ -1,6 +1,7 @@
 # Useful C Constructs #
 
-A collection of C files with useful functions and macros for general use. The directory structure also mirrors how I'd typically structure
+A collection of C files with useful functions and macros for general use.
+The directory structure also mirrors how I'd typically structure
 a medium-sized project.
 
 ## dbg.h
