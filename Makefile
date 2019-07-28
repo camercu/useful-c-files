@@ -14,7 +14,7 @@ DEPENDS   :=$(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.d,$(SOURCES)) \
 INCLUDES  :=$(addprefix -I, $(INC_DIR))
 # enables automatic dependency tracking:
 CPPFLAGS += -MMD -MP
-CFLAGS   += -Wall -Wextra -std=gnu11 -Os -DNDEBUG
+CFLAGS   += -Wall -Wextra -std=c89 -Os -DNDEBUG
 LDFLAGS  :=
 LDLIBS   :=
 DEBUG_FLAGS := -g -Werror -fsanitize=address -fno-omit-frame-pointer -DDEBUG -O0

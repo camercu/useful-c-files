@@ -1,18 +1,17 @@
-//////////////////////////////////////////////////////////////////
-// Awesome Debug Macros
-// Adapted from Zed Shaw's "Learn C the Hard Way"
-// url: http://c.learncodethehardway.org/book/ex20.html
-// date accessed: August 2015
-//////////////////////////////////////////////////////////////////
-
-/*************************************************
+/*********************************************************
+ * @brief Awesome Debug Macros
+ *
+ * Adapted from Zed Shaw's "Learn C the Hard Way"
+ * @see url: http://c.learncodethehardway.org/book/ex20.html
+ * date accessed: August 2015
+ *
  * These macros make debugging easier. Just include
  * this header file in a program and use them!
  *
  * To enable printing of debug() messages:
- * compile with -D_DEBUG_MODE flag (preferred)
+ * compile with -DDEBUG flag (preferred)
  * -- or --
- * insert '#define _DEBUG_MODE' into source/header file
+ * insert '#define DEBUG' into source/header file
  *************************************************/
 
 #ifndef __dbg_h__
