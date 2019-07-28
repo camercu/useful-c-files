@@ -1,8 +1,15 @@
-#if !defined(_DEQUE_H_)
-#    define _DEQUE_H_
+/**
+ * @file deque.h
+ * @brief A simple doubly-linked list implementation.
+ * @author Cameron Unterberger
+ */
 
-#    include <stdbool.h>
-#    include <stdlib.h>
+#if !defined(_DEQUE_H_)
+#define _DEQUE_H_
+
+#include <stdbool.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 typedef struct Node {
     struct Node *next;
@@ -13,29 +20,44 @@ typedef struct Node {
 typedef struct Deque {
     struct Node *head;
     struct Node *tail;
-    size_t n_items;
+    ssize_t n_items;
 } deque_t;
 
-/* function pointer with signature matching free() */
+/**
+ * @brief A function pointer with signature matching free()
+ */
 typedef void (*free_func_t)(void *);
 
-/* Return a pointer to a new deque object. This pointer must be freed by the
- * caller. Before freeing the deque, be sure to pop all items off of the
- * deque
- * first. As a convenience, you can accomplish that with dq_destroy() */
+/**
+ * @brief Return a pointer to a new deque object.
+ *
+ * This pointer must be freed by the caller. Before freeing the deque,
+ * be sure to pop all items off of the deque first. As a convenience, you can
+ * accomplish that with dq_destroy()
+ */
 deque_t *dq_create(void);
 
-/* Empties the deque of nodes, optionally calling free_func on the node
- * data. Free_func must match the function signature of free(). If free_func
+/**
+ * @brief Empties the deque of nodes, optionally calling free_func on the node
+ * data.
+ *
+ * Free_func must match the function signature of free(). If free_func
  * is NULL, dq_destroy will not attmpt to free the data; it will only
- * discard it. */
+ * discard it.
+ */
 void dq_destroy(deque_t *dq, free_func_t free_func);
 
-/* return true if there are no items (nodes) in the deque */
+/**
+ * @brief Return true if there are no items (nodes) in the deque
+ */
 bool dq_is_empty(deque_t *dq);
 
-/* Return the number of items in the deque. Returns (size_t)-1 on error */
-size_t dq_len(deque_t *dq);
+/**
+ * @brief Return the number of items in the deque.
+ *
+ * @returns Number of items in the deque, @c -1 on error.
+ */
+ssize_t dq_len(deque_t *dq);
 
 /* Pushes an item of data onto the head of the deque. Returns a pointer to the
  * node that was pushed onto the deque (i.e. the new head), or NULL on error. */

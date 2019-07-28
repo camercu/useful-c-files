@@ -1,3 +1,9 @@
+/**
+ * @file deque.c
+ * @brief A simple doubly-linked list implementation.
+ * @author Cameron Unterberger
+ */
+
 #include "deque.h"
 
 #include <assert.h>
@@ -148,7 +154,7 @@ void dq_destroy(deque_t *dq, free_func_t free_func) {
 }
 
 /* Return the number of items in the deque. Returns (size_t)-1 on error */
-size_t dq_len(deque_t *dq) {
+ssize_t dq_len(deque_t *dq) {
     if (!dq)
         return (size_t)-1;
     return dq->n_items;
