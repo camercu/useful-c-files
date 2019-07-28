@@ -8,7 +8,7 @@ const char *test_create_destroy() {
     /* pre-fill heap with garbage */
     static const size_t sz = 1024;
     void *garbage = malloc(sz);
-    check_mem(garbage);
+    mu_assert(garbage, "Out of memory");
     memset(garbage, 0xFF, sz);
     free(garbage);
 
@@ -18,14 +18,12 @@ const char *test_create_destroy() {
     mu_assert(!(new->head) && !(new->tail), "Didn't init head/tail to NULL");
     dq_destroy(new, NULL);
     return NULL; /* indicates success */
-error:
-    return "FAIL during setup/teardown";
 }
 
 const char *test_push_pop(size_t n_items) {
     size_t i, tmp;
     deque_t *dq = dq_create();
-    check_mem(dq);
+    mu_assert(dq, "Out of memory");
 
     /* test PUSH */
     for (i = 1; i <= n_items; i++) {
@@ -48,8 +46,6 @@ const char *test_push_pop(size_t n_items) {
     mu_assert(dq_len(dq) == 0, "Logic error");
     dq_destroy(dq, NULL);
     return NULL;
-error:
-    return "FAIL during setup/teardown";
 }
 
 const char *all_tests() {
