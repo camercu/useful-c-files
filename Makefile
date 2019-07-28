@@ -17,7 +17,7 @@ CPPFLAGS += -MMD -MP
 CFLAGS   += -Wall -Wextra -std=gnu11 -Os -DNDEBUG
 LDFLAGS  :=
 LDLIBS   :=
-DEBUG_FLAGS := -g -Werror -fsanitize=address -fno-omit-frame-pointer -O0
+DEBUG_FLAGS := -g -Werror -fsanitize=address -fno-omit-frame-pointer -DDEBUG -O0
 CC := gcc
 
 .PHONY: all
@@ -35,10 +35,11 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(OBJ_DIR)/%.d | $(BUILD_DIR) $(OBJ_DIR)
 $(BUILD_DIR) $(OBJ_DIR):
 	@mkdir -p $(BUILD_DIR) $(OBJ_DIR)
 
-.PHONY: dev
-dev: CFLAGS := $(filter-out -Os -DNDEBUG, $(CFLAGS))
-dev: CFLAGS += $(DEBUG_FLAGS)
-dev: clean all
+# create a debug build
+.PHONY: debug
+debug: CFLAGS := $(filter-out -Os -DNDEBUG, $(CFLAGS))
+debug: CFLAGS += $(DEBUG_FLAGS)
+debug: clean all
 
 ####################
 # Unit Tests

@@ -47,7 +47,7 @@
 #define log_info(MSG, ...) fprintf(stderr, "[INFO] (%s:%s:%d) " MSG "\n", _TRACE_, ##__VA_ARGS__)
 
 /* print formatted debug messages to stderr only when NDEBUG is not defined */
-#ifndef NDEBUG
+#ifdef DEBUG
 # define debug(MSG, ...) fprintf(stderr, "[DEBUG] (%s:%s:%d) " MSG "\n", _TRACE_, ##__VA_ARGS__)
 #else
 # define debug(MSG, ...)
