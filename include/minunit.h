@@ -2,9 +2,9 @@
  * @brief MINIMAL UNIT TESTING MACROS
  *
  * Adapted from code in Learn C the Hard Way, by Zed A. Shaw:
- * @see url: http://c.learncodethehardway.org/book/ex30.html
+ * @see http://c.learncodethehardway.org/book/ex30.html
  * (which was in turn adapted from code by Jera Design:
- * @see url: http://www.jera.com/techinfo/jtns/jtn002.html
+ * @see http://www.jera.com/techinfo/jtns/jtn002.html
  * @file minunit.h
  *
  * These macros make automated unit-testing easier.
