@@ -139,7 +139,7 @@ deque_t *dq_create(void) {
  * data. Free_func must match the function signature of free(). If free_func
  * is NULL, dq_destroy will not attmpt to free the data; it will only
  * discard it. */
-void dq_destroy(deque_t *dq, free_func_t free_func) {
+void dq_destroy(deque_t *dq, freefunc_t free_func) {
     void *data;
     if (!dq) {
         return;

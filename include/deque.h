@@ -24,9 +24,9 @@ typedef struct Deque {
 } deque_t;
 
 /**
- * @brief A function pointer with signature matching free()
+ * @brief A function pointer whose signature matches free()
  */
-typedef void (*free_func_t)(void *);
+typedef void (*freefunc_t)(void *);
 
 /**
  * @brief Return a pointer to a new deque object.
@@ -45,7 +45,7 @@ deque_t *dq_create(void);
  * is NULL, dq_destroy will not attmpt to free the data; it will only
  * discard it.
  */
-void dq_destroy(deque_t *dq, free_func_t free_func);
+void dq_destroy(deque_t *dq, freefunc_t free_func);
 
 /**
  * @brief Return true if there are no items (nodes) in the deque
