@@ -9,6 +9,32 @@
 #include <assert.h>
 #include <errno.h>
 
+/* Return a pointer to a new deque object. This pointer must be freed by the
+ * caller. Before freeing the deque, be sure to pop all items off of the
+ * deque
+ * first. As a convenience, you can accomplish that with dq_destroy() */
+deque_t *dq_create(void) {
+    return calloc(1, sizeof(deque_t));
+}
+
+/* Empties the deque of nodes, optionally calling free_func on the node
+ * data. Free_func must match the function signature of free(). If free_func
+ * is NULL, dq_destroy will not attmpt to free the data; it will only
+ * discard it. */
+void dq_destroy(deque_t *dq, freefunc_t free_func) {
+    void *data;
+    if (!dq) {
+        return;
+    }
+    while (!dq_is_empty(dq)) {
+        data = dq_pop(dq);
+        if (free_func) {
+            free_func(data);
+        }
+    }
+    free(dq);
+}
+
 /* return true if there are no items (nodes) in the deque */
 bool dq_is_empty(deque_t *dq) {
     bool res;
@@ -127,31 +153,6 @@ void *dq_dequeue(deque_t *dq) {
     return ret;
 }
 
-/* Return a pointer to a new deque object. This pointer must be freed by the
- * caller. Before freeing the deque, be sure to pop all items off of the
- * deque
- * first. As a convenience, you can accomplish that with dq_destroy() */
-deque_t *dq_create(void) {
-    return calloc(1, sizeof(deque_t));
-}
-
-/* Empties the deque of nodes, optionally calling free_func on the node
- * data. Free_func must match the function signature of free(). If free_func
- * is NULL, dq_destroy will not attmpt to free the data; it will only
- * discard it. */
-void dq_destroy(deque_t *dq, freefunc_t free_func) {
-    void *data;
-    if (!dq) {
-        return;
-    }
-    while (!dq_is_empty(dq)) {
-        data = dq_pop(dq);
-        if (free_func) {
-            free_func(data);
-        }
-    }
-    free(dq);
-}
 
 /* Return the number of items in the deque. Returns (size_t)-1 on error */
 ssize_t dq_len(deque_t *dq) {
@@ -159,6 +160,7 @@ ssize_t dq_len(deque_t *dq) {
         return (size_t)-1;
     return dq->n_items;
 }
+
 
 /* Joins A and B. Returns pointer to A on success, NULL on failure, with
  * errno set to EINVAL (i.e. A or B is NULL). Items from B are appended to the
