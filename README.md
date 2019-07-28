@@ -16,6 +16,6 @@ Minimalist unit-testing framework.
 
 Doubly-linked list data structure.
 
-## utils.c/h
+## utils.h
 
 Helpful utilities for common tasks (MIN, MAX, ABS, etc.)
