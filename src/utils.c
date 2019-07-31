@@ -9,6 +9,10 @@ bool is_little_endian(void) {
     return endian.val;
 }
 
+/**
+ * @brief: host-endianness-independent implementation of ntohl()
+ * @see: https://stackoverflow.com/a/2100549/5202294
+ */
 uint32_t ntohl(uint32_t n) {
     unsigned char *np = (unsigned char *)&n;
 
