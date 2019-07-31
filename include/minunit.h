@@ -82,15 +82,15 @@ RUN_TESTS(all_tests);
  * @brief A beefed-up version of assert(3) that prints a formatted
  * debug statement on assertion failure.
  *
- * @param test_cond The test expression that should evaluate to true on passing
- * @param message_fmt A printf-like format string
+ * @param TEST_COND The test expression that should evaluate to true on passing
+ * @param MSG_FMT A printf-like format string
  * @param ... [optional] Arguments that need to be passed to the format string
  */
-#define mu_assert(test_cond, message_fmt, ...)                            \
-    if (!(test_cond)) {                                                   \
-        fprintf(stderr, "[minunit] FAILED: " message_fmt, ##__VA_ARGS__); \
-        snprintf(__mu_msg_buf, MAX_MSG_LEN, message_fmt, ##__VA_ARGS__);  \
-        return __mu_msg_buf;                                              \
+#define mu_assert(TEST_COND, MSG_FMT, ...)                            \
+    if (!(TEST_COND)) {                                               \
+        fprintf(stderr, "[minunit] FAILED: " MSG_FMT, ##__VA_ARGS__); \
+        snprintf(__mu_msg_buf, MAX_MSG_LEN, MSG_FMT, ##__VA_ARGS__);  \
+        return __mu_msg_buf;                                          \
     }
 
 /**
@@ -104,10 +104,10 @@ RUN_TESTS(all_tests);
  * @param ... [optional] Arguments to pass to the test function. This
  * allows for parameterized testing.
  */
-#define mu_run_test(test, ...)                                      \
+#define mu_run_test(TEST, ...)                                      \
     do {                                                            \
-        fprintf(stderr, "[minunit] %s(%s)\n", #test, #__VA_ARGS__); \
-        message = test(__VA_ARGS__);                                \
+        fprintf(stderr, "[minunit] %s(%s)\n", #TEST, #__VA_ARGS__); \
+        message = TEST(__VA_ARGS__);                                \
         __mu_tests_run++;                                           \
         if (message)                                                \
             return message;                                         \
@@ -119,15 +119,15 @@ RUN_TESTS(all_tests);
  *
  * This macro should only be called once! Also note that it takes the place of
  * main(), so you do not need to create a main() function.
- * @param all_tests The main test routine that calls all other tests to run.
+ * @param ALL_TESTS The main test routine that calls all other tests to run.
  * @returns @c 0 on success, @ 1 on failure. This is the program exit code.
  */
-#define RUN_TESTS(all_tests)                                            \
+#define RUN_TESTS(ALL_TESTS)                                            \
     int main(int argc, const char *argv[]) {                            \
         (void)argc;                                                     \
         fprintf(stderr, "[minunit] RUNNING: %s >>>>>>>>>>\n", argv[0]); \
         printf("[minunit] RUNNING: %s\n", argv[0]);                     \
-        const char *result = all_tests();                               \
+        const char *result = ALL_TESTS();                               \
         if (result != 0) {                                              \
             printf("[minunit] FAILED: %s\n", result);                   \
         } else {                                                        \

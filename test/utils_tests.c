@@ -2,10 +2,8 @@
 #include "utils.h"
 
 const char *test_endian() {
-    mu_assert(is_little_endian() == __LITTLE_ENDIAN__,
-              "Expected: %d, got: %d",
-              __LITTLE_ENDIAN__,
-              is_little_endian());
+    mu_assert(is_little_endian() == __LITTLE_ENDIAN__, "Expected: %d, got: %d",
+              __LITTLE_ENDIAN__, is_little_endian());
     return NULL;
 }
 
