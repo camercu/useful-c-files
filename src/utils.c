@@ -1,14 +1,6 @@
 #include "utils.h"
 #include <stdint.h>
 
-bool is_little_endian(void) {
-    const union {
-        uint16_t u16;
-        int8_t val;
-    } endian = {.u16 = 1}; /* don't use static : performance detrimental  */
-    return endian.val;
-}
-
 /**
  * @brief: host-endianness-independent implementation of ntohl()
  * @see: https://stackoverflow.com/a/2100549/5202294

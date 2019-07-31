@@ -8,6 +8,7 @@
 
 #include <errno.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 /**
  * @brief Macro for absolute value of a numeric type
@@ -71,6 +72,11 @@ typedef void (*sig_handler_t)(int signo);
  * @see https://stackoverflow.com/questions/8978935/detecting-endianness
  * @see https://godbolt.org/g/DAafKo
  */
-bool is_little_endian(void);
+#define is_little_endian() (__endian_u.val)
+
+static const union {
+    uint16_t u16;
+    uint8_t val;
+} __endian_u = {.u16 = 1};
 
 #endif /* __util_macros_h__ */
