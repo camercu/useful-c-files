@@ -86,11 +86,11 @@ RUN_TESTS(all_tests);
  * @param message_fmt A printf-like format string
  * @param ... [optional] Arguments that need to be passed to the format string
  */
-#define mu_assert(test_cond, message_fmt, ...)                           \
-    if (!(test_cond)) {                                                  \
-        log_err(message_fmt, ##__VA_ARGS__);                             \
-        snprintf(__mu_msg_buf, MAX_MSG_LEN, message_fmt, ##__VA_ARGS__); \
-        return __mu_msg_buf;                                             \
+#define mu_assert(test_cond, message_fmt, ...)                            \
+    if (!(test_cond)) {                                                   \
+        fprintf(stderr, "[minunit] FAILED: " message_fmt, ##__VA_ARGS__); \
+        snprintf(__mu_msg_buf, MAX_MSG_LEN, message_fmt, ##__VA_ARGS__);  \
+        return __mu_msg_buf;                                              \
     }
 
 /**
@@ -104,37 +104,37 @@ RUN_TESTS(all_tests);
  * @param ... [optional] Arguments to pass to the test function. This
  * allows for parameterized testing.
  */
-#define mu_run_test(test, ...)                              \
-    do {                                                    \
-        fprintf(stderr, "--- [minunit] %s() ---\n", #test); \
-        message = test(__VA_ARGS__);                        \
-        __mu_tests_run++;                                   \
-        if (message)                                        \
-            return message;                                 \
+#define mu_run_test(test, ...)                                      \
+    do {                                                            \
+        fprintf(stderr, "[minunit] %s(%s)\n", #test, #__VA_ARGS__); \
+        message = test(__VA_ARGS__);                                \
+        __mu_tests_run++;                                           \
+        if (message)                                                \
+            return message;                                         \
     } while (0)
 
 /**
- * @brief This kicks off the series of test routines by calling your test_all
+ * @brief This kicks off the series of test routines by calling your all_tests
  * function.
  *
  * This macro should only be called once! Also note that it takes the place of
  * main(), so you do not need to create a main() function.
- * @param test_all The main test routine that calls all other tests to run.
+ * @param all_tests The main test routine that calls all other tests to run.
  * @returns @c 0 on success, @ 1 on failure. This is the program exit code.
  */
-#define RUN_TESTS(test_all)                                          \
-    int main(int argc, const char *argv[]) {                         \
-        argc = 1;                                                    \
-        fprintf(stderr, ">>> [minunit] RUNNING: %s >>>\n", argv[0]); \
-        printf("[minunit] RUNNING: %s ---\n", argv[0]);              \
-        const char *result = test_all();                             \
-        if (result != 0) {                                           \
-            printf("[minunit] FAILED: %s\n", result);                \
-        } else {                                                     \
-            printf("[minunit] ALL TESTS PASSED\n");                  \
-        }                                                            \
-        printf("[minunit] Tests run: %d\n", __mu_tests_run);         \
-        exit(result != 0);                                           \
+#define RUN_TESTS(all_tests)                                            \
+    int main(int argc, const char *argv[]) {                            \
+        (void)argc;                                                     \
+        fprintf(stderr, "[minunit] RUNNING: %s >>>>>>>>>>\n", argv[0]); \
+        printf("[minunit] RUNNING: %s\n", argv[0]);                     \
+        const char *result = all_tests();                               \
+        if (result != 0) {                                              \
+            printf("[minunit] FAILED: %s\n", result);                   \
+        } else {                                                        \
+            printf("[minunit] All tests PASSED\n");                     \
+        }                                                               \
+        printf("[minunit] Tests run: %d\n", __mu_tests_run);            \
+        exit(result != 0);                                              \
     }
 
 /* These are for internal use of the test suite */

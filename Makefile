@@ -1,4 +1,4 @@
-TARGET    =$(OBJECTS)
+TARGET    =
 SRC_DIR   :=./src
 INC_DIR   :=./include
 TEST_DIR  :=./test
@@ -8,8 +8,7 @@ SOURCES   :=$(wildcard $(SRC_DIR)/*.c)
 TEST_SRC  :=$(wildcard $(TEST_DIR)/*_tests.c)
 OBJECTS   :=$(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SOURCES))
 TESTS     :=$(patsubst %.c,%,$(TEST_SRC))
-DEPENDS   :=$(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.d,$(SOURCES)) \
-			$(patsubst $(TEST_DIR)/%.c,$(OBJ_DIR)/%.d,$(TEST_SRC))
+DEPENDS   :=$(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.d,$(SOURCES))
 
 INCLUDES  :=$(addprefix -I, $(INC_DIR))
 # enables automatic dependency tracking:
@@ -24,16 +23,16 @@ CC := gcc
 all: $(TARGET)
 
 ### TARGET ###
-$(BUILD_DIR)/$(TARGET): $(OBJECTS)
+$(BUILD_DIR)/$(TARGET): $(OBJECTS) | $(BUILD_DIR)
 	$(LINK.c) $(INCLUDES) $^ $(LDLIBS) -o $@
 
 # OBJECTS
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(OBJ_DIR)/%.d | $(BUILD_DIR) $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(OBJ_DIR)/%.d | $(OBJ_DIR)
 	$(COMPILE.c) $(INCLUDES) $< -o $@
 
 # SOURCES
 $(BUILD_DIR) $(OBJ_DIR):
-	@mkdir -p $(BUILD_DIR) $(OBJ_DIR)
+	mkdir -p $@
 
 # create a debug build
 .PHONY: debug
@@ -51,7 +50,7 @@ $(TESTS): $(TEST_DIR)/% : $(TEST_DIR)/%.c $(OBJECTS)
 test: CFLAGS   := $(filter-out -Os -DNDEBUG, $(CFLAGS))
 test: CFLAGS   += $(DEBUG_FLAGS)
 test: CPPFLAGS := $(filter-out -MMD -MP, $(CPPFLAGS))
-test: clean all $(TESTS)
+test: clean $(OBJECTS) $(TESTS)
 	cd $(TEST_DIR) && sh runtests.sh
 
 .PHONY: clean
