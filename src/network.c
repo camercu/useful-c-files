@@ -244,7 +244,7 @@ int tcp_server_listen(const char *port) {
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
-    hints.ai_flags |= AI_NUMERICSERV;
+    /* hints.ai_flags |= AI_NUMERICSERV; */
 
     if ((rv = getaddrinfo(NULL, port, &hints, &servinfo)) != 0) {
         fprintf(stderr, "[server] getaddrinfo: %s\n", gai_strerror(rv));
