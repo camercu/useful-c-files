@@ -5,12 +5,21 @@
 
 #include "network.h"
 
+#include <sys/socketvar.h>
+
 #include <arpa/inet.h>
 #include <errno.h>
+#include <net/if.h>
 #include <netdb.h>
+#include <netinet/if_ether.h>
 #include <netinet/in.h>
+#include <netinet/in_systm.h>
+#include <netinet/ip.h>
+#include <netinet/ip_var.h>
 #include <netinet/tcp.h>
+#include <netinet/tcp_var.h>
 #include <netinet/udp.h>
+#include <netinet/udp_var.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -128,7 +137,7 @@ ssize_t recv_timeout(int sockfd, void **buf, size_t *len, int timeout_millis) {
 ssize_t recv_delim(int sockfd, void **buf, size_t *len, void *delim,
                    size_t delim_len) {
     size_t total = 0, allocated;
-    size_t nbytes;
+    ssize_t nbytes;
     void *new;
 
     if (!buf || !len) {
@@ -164,7 +173,7 @@ ssize_t recv_delim(int sockfd, void **buf, size_t *len, void *delim,
  */
 ssize_t recv_count(int sockfd, void **buf, size_t count) {
     size_t total = 0;
-    size_t nbytes;
+    ssize_t nbytes;
     void *new = NULL;
 
     if (!buf) {
@@ -373,3 +382,29 @@ int udp_server_bind(const char *port) {
 
     return sockfd;
 }
+
+/**
+ * @brief Open a raw IPv4 socket
+ * @returns Socket descriptor on success, @c -1 on error.
+ */
+int raw4_socket_create() {
+    int on = 1;
+    int rawfd = socket(AF_INET, SOCK_RAW, 0);
+    if (-1 == rawfd) {
+        return -1;
+    }
+    return setsockopt(rawfd, IPPROTO_IP, IP_HDRINCL, &on, sizeof(on));
+}
+
+// /**
+//  * @brief Open a raw IPv6 socket
+//  * @returns Socket descriptor on success, @c -1 on error.
+//  */
+// int raw6_socket_create() {
+//     int on = 1;
+//     int rawfd = socket(AF_INET6, SOCK_RAW, 0);
+//     if (-1 == rawfd) {
+//         return -1;
+//     }
+//     return setsockopt(rawfd, IPPROTO_IPV6, IPV6_HDRINCL, &on, sizeof(on));
+// }
