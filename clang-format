@@ -9,6 +9,8 @@ BasedOnStyle: Chromium
 Language: Cpp
 
 AlignAfterOpenBracket: Align
+BinPackArguments: true
+BinPackParameters: true
 BreakBeforeBraces: Attach
 BreakBeforeTernaryOperators: 'true'
 ColumnLimit: 80
