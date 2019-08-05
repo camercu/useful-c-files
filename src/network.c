@@ -193,7 +193,7 @@ int tcp_client_connect(const char *host, const char *port) {
     int rv;
     char s[INET6_ADDRSTRLEN];
 
-    memset(&hints, 0, sizeof hints);
+    memset(&hints, 0, sizeof(hints));
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
 
@@ -233,7 +233,44 @@ int tcp_client_connect(const char *host, const char *port) {
 }
 
 /**
- * @returns Socket descriptor listening on 'port', @c -1 on error
+ * @returns Socket descriptor ready to send UDP packets to host:port, @c -1 on
+ * error
+ */
+int udp_client_create(const char *host, const char *port) {
+    int sockfd;
+    struct addrinfo hints, *servinfo, *p;
+    int rv;
+
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_DGRAM;
+
+    if ((rv = getaddrinfo(host, port, &hints, &servinfo)) != 0) {
+        fprintf(stderr, "[client] getaddrinfo: %s\n", gai_strerror(rv));
+        return 1;
+    }
+
+    /* loop through all the results and connect to the first we can */
+    for (p = servinfo; p != NULL; p = p->ai_next) {
+        if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) ==
+            -1) {
+            perror("[client] socket");
+            continue;
+        }
+
+        break;
+    }
+
+    if (p == NULL) {
+        perror("[client] failed to connect");
+        return 2;
+    }
+    freeaddrinfo(servinfo); /* all done with this structure */
+    return sockfd;
+}
+
+/**
+ * @returns Socket descriptor listening on TCP 'port', @c -1 on error
  */
 int tcp_server_listen(const char *port) {
     int sockfd;
@@ -261,7 +298,7 @@ int tcp_server_listen(const char *port) {
 
         if (setsockopt_reuseaddr(sockfd, true) == -1) {
             perror("[server] setsockopt");
-            exit(1);
+            return -1;
         }
 
         if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
@@ -283,5 +320,56 @@ int tcp_server_listen(const char *port) {
         perror("[server] listen");
         return -1;
     }
+    return sockfd;
+}
+
+/**
+ * @brief Sets up a socket ready for recvfrom()
+ * @returns Socket descriptor bound to UDP 'port', @c -1 on error
+ */
+int udp_server_bind(const char *port) {
+    int sockfd;
+    struct addrinfo hints, *servinfo, *p;
+    int rv;
+
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_DGRAM;
+    hints.ai_flags = AI_PASSIVE;
+    /* hints.ai_flags |= AI_NUMERICSERV; */
+
+    if ((rv = getaddrinfo(NULL, port, &hints, &servinfo)) != 0) {
+        fprintf(stderr, "[server] getaddrinfo: %s\n", gai_strerror(rv));
+        return 1;
+    }
+
+    /* loop through all the results and bind to the first we can */
+    for (p = servinfo; p != NULL; p = p->ai_next) {
+        if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) ==
+            -1) {
+            perror("[server] socket");
+            continue;
+        }
+
+        if (setsockopt_reuseaddr(sockfd, true) == -1) {
+            perror("[server] setsockopt");
+            return -1;
+        }
+
+        if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
+            close(sockfd);
+            perror("[server] bind");
+            continue;
+        }
+
+        break;
+    }
+    freeaddrinfo(servinfo); /* all done with this structure */
+
+    if (p == NULL) {
+        perror("[server] failed to connect\n");
+        return -1;
+    }
+
     return sockfd;
 }
