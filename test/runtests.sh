@@ -18,7 +18,7 @@ for test in *_tests; do
 		if $VALGRIND "./$test" 2>> tests.log; then
 			echo "${ATTR_BOLD}+++ $test PASS${ATTR_RESET}"
 		else
-			echo "${COLOR_RED}${ATTR_BOLD}>>> ERROR in test '$test':${ATTR_RESET} here's the tests.log"
+			echo "${COLOR_RED}${ATTR_BOLD}>>> ERROR in test '$test':${ATTR_RESET} here's the tail of tests.log:"
 			echo "--------------"
 			tail tests.log
 			exit 1
