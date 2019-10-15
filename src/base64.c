@@ -13,9 +13,51 @@ static const char b64e_url[] =
 
 char *b64encode(const char *in, const size_t inlen, const b64_encoding_t charset, size_t *outlen)
 {
-    (void)in;(void)charset;
+    const char *end = in + inlen;
+    char *out = NULL, *outp = NULL;
+
     *outlen = ((inlen+2)/3)*4;  /* includes room for padding */
-    return NULL;
+    out = outp = calloc(1, *outlen + 1);
+    if (!out) {
+        return NULL;
+    }
+
+    /* select appropriate character set */
+    const char *basis;
+    if (charset == B64_URL) {
+        basis = b64e_url;
+    } else {
+        basis = b64e_std;
+    }
+
+    uint32_t buf;
+    int tripos, padding;
+    char byte;
+    while (in < end) {
+        buf = 0;
+        /* load 3 bytes into buffer */
+        for (tripos = 0; (tripos < 3) && (in < end); tripos++) {
+            buf = (buf << 8) | *in++;
+        }
+
+        /* fix up buf if didn't read full 3 bytes */
+        padding = 3 - tripos;
+        buf <<= padding * 2;
+
+        /* output 4 bytes by splitting the 3 bytes into 6-bit chunks */
+        for (int i = tripos; i >= 0; i--) {
+            byte = (buf >> (6 * i)) & 0x3f;
+            debug("byte = 0x%02x, b64 = %c", byte, basis[(int)byte]);
+            *outp++ = basis[(int)byte];
+        }
+    }
+
+    /* add padding to end if required */
+    for (int i = 0; i < padding; i++) {
+        *outp++ = BASE64_PAD;
+    }
+
+    return out;
 }
 
 
@@ -50,7 +92,6 @@ char *b64decode(const char *in, const size_t inlen, const b64_encoding_t charset
     char byte;
     int padding = 0;
     while (in < end) {
-        buf = 0;
         /* load 4 bytes into buffer */
         for (quadpos = 0; (quadpos < 4) && (in < end); quadpos++) {
             byte = dtable[(int)*in++];
@@ -62,25 +103,21 @@ char *b64decode(const char *in, const size_t inlen, const b64_encoding_t charset
         }
 
         /* ensure appropriate padding */
-        if (quadpos == 1) {
+        padding = 4 - quadpos;
+        if (padding == 3) {
             errno = EINVAL;
             free(out);
             *outlen = 0;
             return NULL;
-        } else {
-            padding = 4 - quadpos;
         }
 
         /* fix up buffer if didn't load full 4 bytes */
         buf <<= 6 * padding;
-        /* move bytes to prep for output */
-        buf = (buf << 8) | (buf >> 24);
 
         /* output 3 bytes from buffer */
-        for (int i = 0; i < 3; i++) {
-            buf = (buf << 8) | (buf >> 24); /* rotate left 1 byte */
-            *outp++ = buf & 0xff;
-        }
+        *outp++ = (buf >> 16) & 0xff;
+        *outp++ = (buf >> 8) & 0xff;
+        *outp++ = buf & 0xff;
     }
 
     *outlen = outp - out - padding;

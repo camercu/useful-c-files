@@ -40,10 +40,31 @@ const char *test_b64decode(void) {
 }
 
 
+const char *test_b64encode(void) {
+    const char *monkey_biz = "Monkey Business";
+    size_t outlen;
+    char *output = b64encode(monkey_biz, strlen(monkey_biz), B64_STANDARD, &outlen);
+    mu_assert(!strcmp(output, "TW9ua2V5IEJ1c2luZXNz"),
+              "Encoded output didn't match expected: '%s'", output);
+    mu_assert(outlen == 20, "Wrong length of output!");
+    free(output);
+
+    const char *padded = "padding check";
+    output = b64encode(padded, strlen(padded), B64_STANDARD, &outlen);
+    mu_assert(!strcmp(output, "cGFkZGluZyBjaGVjaw=="),
+              "Encoded padded output didn't match expected: '%s'", output);
+    mu_assert(outlen == 20, "Wrong length of output!");
+    free(output);
+
+    return NULL;
+}
+
+
 const char *all_tests() {
     mu_suite_start();
 
     mu_run_test(test_b64decode);
+    mu_run_test(test_b64encode);
 
     return NULL;
 }
