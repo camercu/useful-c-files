@@ -50,7 +50,7 @@
  * @warning
  * The numbers @c x and @c y must be of the same type
  */
-#define ROUNDUP(x, y) (((x) + (y) - 1) / (y))
+#define CEILING(x, y) (((x) + (y) - 1) / (y))
 
 /**
  * @brief Swap the values contained by two numeric variables.
