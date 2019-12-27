@@ -53,7 +53,7 @@
 #define CEILING(x, y) (((x) + (y) - 1) / (y))
 
 /**
- * @brief Swap the values contained by two numeric variables.
+ * @brief Swap the values contained by two numeric variables in place.
  *
  * @warning
  * The variables must be of the same type (or at least be represented with the
