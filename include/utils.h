@@ -11,12 +11,12 @@
 #include <stdint.h>
 
 /**
- * @brief Macro for absolute value of a numeric type
+ * @brief Return the absolute value of a numeric type
  */
 #define ABS(VALUE) ((VALUE) < 0 ? -(VALUE) : (VALUE))
 
 /**
- * @brief Macro to return the minimum of two numbers.
+ * @brief Return the minimum of two numbers.
  * @warning
  * The numbers being compared must have the same signedness, or else you may
  * get unpredictable results!
@@ -24,7 +24,7 @@
 #define MIN(A, B) ((A) < (B) ? (A) : (B))
 
 /**
- * @brief Macro to return the minimum of two numbers.
+ * @brief Return the maximum of two numbers.
  * @warning
  * The numbers being compared must have the same signedness, or else you may
  * get unpredictable results!
@@ -53,7 +53,7 @@
 #define ROUNDUP(x, y) (((x) + (y) - 1) / (y))
 
 /**
- * @brief Macro to swap the values contained by two numeric variables.
+ * @brief Swap the values contained by two numeric variables.
  *
  * @warning
  * The variables must be of the same type (or at least be represented with the
@@ -67,12 +67,12 @@
 
 
 /**
- * @brief The number of elements in an array
+ * @brief Return the number of elements in an array
  */
-#define ARRAYLENGTH(arr) (sizeof((arr)) / sizeof(*(arr)))
+#define ARRAYLEN(arr) (sizeof((arr)) / sizeof(*(arr)))
 
 /**
- * @brief Makes an n-bit mask.
+ * @brief Make an n-bit mask.
  *
  * @warning
  * @c n must be in the range 1-31 (inclusive)!
@@ -80,10 +80,12 @@
 #define BITMASK(n) ((1 << (n)) - 1)
 
 /**
- * @brief Make a bit mask where bits between indeces [low..hi] are set.
- *
+ * @brief Make a bitmask where the bits between indeces [low..hi] are set.
+ * @note
+ * Index 0 is the least-significant bit
  * @warning
- * Does not check to ensure low < high. Caller must ensure this is true.
+ * Caller must ensure <tt>low < high</tt>. @c low and @c hi must both
+ * be in the range of [0..31].
  */
 #define MASKRANGE(low, hi) (((hi) - (low) + 1) << (low))
 
@@ -100,7 +102,7 @@
 
 
 /**
- * @brief A macro to restart a system call that was interrupted by a signal.
+ * @brief Do a system call, restarting if interrupted by a signal.
  * @see: Kerrisk, Michael. The Linux Programming Interface: A Linux and UNIX
  * System Programming Handbook. No Starch Press. San Francisco, 2010. pg. 443
  *
@@ -121,7 +123,7 @@
 typedef void (*sig_handler_t)(int signo);
 
 /**
- * @brief Returns a compile-time constant indicating whether a system uses
+ * @brief Return a compile-time constant indicating whether a system uses
  * Big Endian byte order.
  * @returns @c 1 if big endian, @c 0 if little endian
  * @see https://stackoverflow.com/questions/8978935/detecting-endianness
@@ -148,12 +150,22 @@ static const union {
 
 
 /**
- * @brief Specifies the minimum alignment in bytes
+ * @brief Specify the minimum alignment in bytes (e.g. for structs)
  */
 #ifdef __GNUC__
 #define ALIGNED(n) __attribute__((__aligned__(n)))
 #else
 #define ALIGNED(n)
+#endif /* __GNUC__
+
+
+/**
+ * @brief Pack structs to reduce internal alignment padding
+ */
+#ifdef __GNUC__
+#define PACKED() __attribute__((__packed__()))
+#else
+#define PACKED()
 #endif /* __GNUC__
 
 
