@@ -43,7 +43,7 @@
  * @warning
  * The numbers @c x and @c y must be of the same type
  */
-#define ROUNDUP(x, y) ((x) / (y) * (y))
+#define ROUNDDOWN(x, y) ((x) / (y) * (y))
 
 /**
  * @brief Get the ceiling of <tt>x / y</tt>
