@@ -108,8 +108,8 @@
  *
  * The X* macros allow the C preprocessor to prescan/expand the tokens to their definitions.
  */
-#define MAKESTR(S) #S
-#define XSTR(S) MAKESTR(S)
+#define STR(S) #S
+#define XSTR(S) STR(S)
 #define CONC(A, B) A##B
 #define XCONC(A, B) CONC(A, B)
 #define XXCONC(A, B) XCONC(A, B)
