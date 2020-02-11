@@ -8,10 +8,10 @@
  * These macros make debugging easier. Just include
  * this header file in a program and use them!
  *
- * To enable printing of debug() messages:
- * compile with -DDEBUG flag (preferred)
+ * To disable printing of debug() messages:
+ * compile with -DNDEBUG flag (preferred)
  * -- or --
- * insert '#define DEBUG' into source/header file
+ * insert '#define NDEBUG' into source/header file
  *************************************************/
 
 #ifndef __dbg_h__
@@ -23,19 +23,12 @@
 #include <time.h>   /* clock() */
 #include <stdlib.h> /* EXIT_SUCCESS, EXIT_FAILURE, random(), RAND_MAX */
 #include <unistd.h> /* usleep() */
+#include "utils.h"	/* STR() macro */
 
-/* common function return codes for success and failure */
-#define FUNC_SUCCESS (0)
-#define FUNC_FAILURE (-1)
 
 /* trace format for debugging/logging
    (this just saves typing in later macro definitions) */
 #define _TRACE_   __FILE__, __func__, __LINE__
-
-#define STRINGIFY(X) #X
-
-/* perform macro expansion before stringifying */
-#define XSTRINGIFY(X) STRINGIFY(X)
 
 /* safe, readable version of strerror(errno) */
 #define clean_strerror() (errno == 0 ? "None" : strerror(errno))
@@ -46,10 +39,10 @@
 #define log_info(MSG, ...) fprintf(stderr, "[INFO] (%s:%s:%d) " MSG "\n", _TRACE_, ##__VA_ARGS__)
 
 /* print formatted debug messages to stderr only when NDEBUG is not defined */
-#ifdef DEBUG
-# define debug(MSG, ...) fprintf(stderr, "[DEBUG] (%s:%s:%d) " MSG "\n", _TRACE_, ##__VA_ARGS__)
-#else
+#ifdef NDEBUG
 # define debug(MSG, ...)
+#else
+# define debug(MSG, ...) fprintf(stderr, "[DEBUG] (%s:%s:%d) " MSG "\n", _TRACE_, ##__VA_ARGS__)
 #endif /* _DEBUG_MODE */
 
 /* enhanced assert(); check that ASSERT_COND is true, otherwise log formatted
@@ -63,7 +56,7 @@
 #define check_mem(MEM_PTR) if(!(MEM_PTR)) { log_err("Out of memory."); errno=ENOMEM; goto error; }
 
 /* like check_mem, but for pointers you plan to dereference */
-#define check_ptr(PTR) if(!(PTR)) { log_err("%s cannot be NULL; will cause dereference error.", STRINGIFY(PTR)); errno=EINVAL; goto error; }
+#define check_ptr(PTR) if(!(PTR)) { log_err("%s cannot be NULL; will cause dereference error.", STR(PTR)); errno=EINVAL; goto error; }
 
 /* placed in part of fn that shouldn't run, i.e. if/switch branches;
    prints error followed by "goto error" for cleanup/exit */
@@ -80,37 +73,21 @@
 /* Like fail(), causes "unexpected" program exit, like when failing enforce() */
 #define DIE() do { log_err("EXIT_FAILURE for debugging"); exit(EXIT_FAILURE); } while (0)
 
+	
 /* computes how long a function takes to run (miliseconds) */
-#define log_time(FUNC, ...) do { clock_t start=clock(); \
-                            (*(FUNC))(__VA_ARGS__); \
-                            clock_t end=clock(); \
-                            double elapsed = (double)(end-start)*1000.0/CLOCKS_PER_SEC; \
-                            log_info("%s took %.3f ms to run", STRINGIFY(FUNC), elapsed); } while(0)
+#define log_time(FUNC, ...) do {    \
+	clock_t start = clock();        \
+    (*(FUNC))(__VA_ARGS__);         \
+    clock_t end = clock();          \
+    double elapsed = (double)(end - start) * 1000.0 / CLOCKS_PER_SEC;   \
+    log_info("%s took %.3f ms to run", STR(FUNC), elapsed);             \
+	} while(0)
 /* ^^ useful resource I referenced to help build this:
    https://mikeash.com/pyblog/friday-qa-2010-12-31-c-macro-tips-and-tricks.html */
 
-/* performs free() [or equivalent] only if ptr is not NULL, and sets ptr to
-   NULL after free. Helps avoid double-free bugs with "goto error"
-   Example: safefree(ptr);
-   Example: safefree(mutex_ptr, pthread_mutex_destroy); */
-#define __safefree(PTR, FREE_FUNC, ...) if((PTR)) { (*(FREE_FUNC))((void*)(PTR)); (PTR) = NULL; }
-#define safefree(PTR, ...) __safefree((PTR), ##__VA_ARGS__, free )
-
+   
 /* Add random delay to program at this point (0-10ms). Useful for debugging race conditions */
-#define jitter() usleep((int)((double)random()/(double)RAND_MAX * 10000))
+#define jitter() usleep(RAND_INT(0, 10000))
 
-/* printf pattern for displaying binary of single byte
-   source: https://stackoverflow.com/questions/111928/is-there-a-printf-converter-to-print-in-binary-format
-   Example: printf("Byte value: " BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(byte)); */
-#define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
-#define BYTE_TO_BINARY(BYTE)  \
-  ((BYTE) & 0x80 ? '1' : '0'), \
-  ((BYTE) & 0x40 ? '1' : '0'), \
-  ((BYTE) & 0x20 ? '1' : '0'), \
-  ((BYTE) & 0x10 ? '1' : '0'), \
-  ((BYTE) & 0x08 ? '1' : '0'), \
-  ((BYTE) & 0x04 ? '1' : '0'), \
-  ((BYTE) & 0x02 ? '1' : '0'), \
-  ((BYTE) & 0x01 ? '1' : '0')
 
 #endif /* __dbg_h__ */
