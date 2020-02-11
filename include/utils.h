@@ -9,6 +9,14 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
+
+
+/**
+ * @brief Common function return codes for success and failure
+ */
+#define FUNC_SUCCESS (0)
+#define FUNC_FAILURE (-1)
 
 /**
  * @brief Macro to replace a boolean expression with it's string equivalent
@@ -199,5 +207,57 @@ static const union {
     } while (0)
 
 
+/**
+ * @brief Printf pattern for displaying binary of single byte
+ * @see https://stackoverflow.com/questions/111928/is-there-a-printf-converter-to-print-in-binary-format
+ * 
+ * Example:
+ * @code
+ * printf("Byte value: " BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(byte));
+ * @endcode
+ */
+#define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
+#define BYTE_TO_BINARY(BYTE)  \
+  ((BYTE) & 0x80 ? '1' : '0'), \
+  ((BYTE) & 0x40 ? '1' : '0'), \
+  ((BYTE) & 0x20 ? '1' : '0'), \
+  ((BYTE) & 0x10 ? '1' : '0'), \
+  ((BYTE) & 0x08 ? '1' : '0'), \
+  ((BYTE) & 0x04 ? '1' : '0'), \
+  ((BYTE) & 0x02 ? '1' : '0'), \
+  ((BYTE) & 0x01 ? '1' : '0')
+
+
+/**
+ * @brief Performs free() [or equivalent] only if ptr is not NULL, and sets ptr to
+ * NULL after free.
+ * This helps avoid double-free bugs, e.g. with "goto error" construct
+ *
+ * @note
+ * The FREE_FUNC argument (if provided), must match the signature @code void FREE_FUNC(void *ptr) @endcode
+ *
+ * Example 1: common free() substitution
+ * @code
+ * safefree(ptr);
+ * @endcode
+ * Example 2: More complex substitution for free()
+ * @code
+ * safefree(mutex_ptr, pthread_mutex_destroy);
+ * @endcode
+ */
+#define __safefree(PTR, FREE_FUNC, ...) if((PTR)) { (*(FREE_FUNC))((void*)(PTR)); (PTR) = NULL; }
+#define safefree(PTR, ...) __safefree((PTR), ##__VA_ARGS__, free )
+
+
+/**
+ * @brief Return a random integer in range [min..max].
+ * This implementation ensures the distribution of random numbers is even, avoiding modulo bias.
+ * 
+ * @warning
+ * This is NOT cryptographically secure!
+ */
+#define _RAND_RATIO (1.0 / (RAND_MAX + 1.0))
+#define RAND_INT(_min, _max) (int)(((_max) - (_min) + 1) * ((double)random() * (_RAND_RATIO)))
+  
 
 #endif /* __util_macros_h__ */
