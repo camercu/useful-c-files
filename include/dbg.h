@@ -76,12 +76,12 @@
 	
 /* computes how long a function takes to run (miliseconds) */
 #define log_time(FUNC, ...) do {    \
-	clock_t start = clock();        \
+    clock_t start = clock();        \
     (*(FUNC))(__VA_ARGS__);         \
     clock_t end = clock();          \
     double elapsed = (double)(end - start) * 1000.0 / CLOCKS_PER_SEC;   \
     log_info("%s took %.3f ms to run", STR(FUNC), elapsed);             \
-	} while(0)
+    } while(0)
 /* ^^ useful resource I referenced to help build this:
    https://mikeash.com/pyblog/friday-qa-2010-12-31-c-macro-tips-and-tricks.html */
 
