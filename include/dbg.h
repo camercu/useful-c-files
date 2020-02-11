@@ -43,7 +43,7 @@
 # define debug(MSG, ...)
 #else
 # define debug(MSG, ...) fprintf(stderr, "[DEBUG] (%s:%s:%d) " MSG "\n", _TRACE_, ##__VA_ARGS__)
-#endif /* _DEBUG_MODE */
+#endif /* NDEBUG */
 
 /* enhanced assert(); check that ASSERT_COND is true, otherwise log formatted
    error msg then "goto error" for cleanup/exit */
